@@ -1,0 +1,16 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{385F2FED-4F72-7484-E970-BC97771BB077}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "MazeGen",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	]
+}
