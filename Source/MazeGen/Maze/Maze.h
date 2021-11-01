@@ -9,13 +9,12 @@
 class ACell;
 class AWall;
 
-USTRUCT()
-class FArray2D
-{
-	GENERATED_BODY()
-
-public:
-
+UENUM(BlueprintType)
+enum class EMazeSide : uint8 {
+	EMS_North	UMETA(DisplayName = "North"),
+	EMS_East	UMETA(DisplayName = "East"),
+	EMS_South	UMETA(DisplayName = "South"),
+	EMS_West	UMETA(DisplayName = "West")
 };
 
 UCLASS(BlueprintType, Blueprintable)
@@ -39,6 +38,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintNativeEvent)
+	void Init(int W, int L);
+
 	UFUNCTION()
 	void AddCell(int X, int Y);
 	UFUNCTION(BlueprintNativeEvent)
@@ -50,6 +52,13 @@ protected:
 	void HandleWallAdded(AWall* NewWall);
 
 private:
+	UPROPERTY()
+	bool bInitialized;
+	UFUNCTION()
+	void Init_CreateCells();
+	UFUNCTION()
+	void Init_CreateWalls();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int Length;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
