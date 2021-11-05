@@ -4,7 +4,7 @@
 #include "MazeUtils.h"
 #include "Maze.h"
 
-AWall* GetWall(const FCellWalls& Walls, EMazeSide Side)
+AWall* UMazeUtils::GetWall(const FCellWalls& Walls, EMazeSide Side)
 {
 	if (Side == EMazeSide::EMS_North)
 	{

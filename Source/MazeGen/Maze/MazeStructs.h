@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "MazeStructs.generated.h"
 
-class AWall
+class AWall;
 
 USTRUCT(BlueprintType)
 struct FCellWalls
