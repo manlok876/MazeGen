@@ -35,29 +35,26 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidth(int NewWidth);
 
+	UFUNCTION(BlueprintPure)
+	ACell* GetCell(int X, int Y) const;
+	UFUNCTION(BlueprintPure)
+	AWall* GetWall(int CellX, int CellY, EMazeSide Side) const;
+
 protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintNativeEvent)
 	void Init(int W, int L);
 
-	UFUNCTION()
-	void AddCell(int X, int Y);
 	UFUNCTION(BlueprintNativeEvent)
 	void HandleCellAdded(ACell* NewCell);
 
-	UFUNCTION()
-	void AddWall(int X, int Y);
 	UFUNCTION(BlueprintNativeEvent)
 	void HandleWallAdded(AWall* NewWall);
 
 private:
 	UPROPERTY()
 	bool bInitialized;
-	UFUNCTION()
-	void Init_CreateCells();
-	UFUNCTION()
-	void Init_CreateWalls();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int Length;
@@ -68,6 +65,18 @@ private:
 	TArray<AWall*> WallsNS;
 	UPROPERTY()
 	TArray<AWall*> WallsWE;
+	UFUNCTION()
+	int GetNSWallIndex1D(int X, int Y) const;
+	UFUNCTION()
+	int GetWEWallIndex1D(int X, int Y) const;
+
 	UPROPERTY()
 	TArray<ACell*> Cells;
+	UFUNCTION()
+	int GetCellIndex1D(int X, int Y) const;
+	UFUNCTION()
+	static int Index1DFromIndex2D(int X, int SizeX, int Y, int SizeY);
+
+	UFUNCTION()
+	void UpdateMazeSize(int NewWidth, int NewLength);
 };

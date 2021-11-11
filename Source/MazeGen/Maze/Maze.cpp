@@ -18,6 +18,7 @@ void AMaze::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Init(Width, Length);
 }
 
 void AMaze::Tick(float DeltaTime)
@@ -28,47 +29,15 @@ void AMaze::Tick(float DeltaTime)
 
 void AMaze::Init_Implementation(int W, int L)
 {
-	Init_CreateCells();
-	Init_CreateWalls();
+	Width = 0;
+	Length = 0;
 
-	bInitialized = false;
-}
+	UpdateMazeSize(W, L);
 
-void AMaze::Init_CreateCells()
-{
-	Cells.SetNum(Width * Length);
-	for (int i = 0; i < Width * Length; ++i)
-	{
-		ACell* NewCell = GetWorld()->SpawnActor<ACell>();
-		Cells[i] = NewCell;
-	}
-}
-
-void AMaze::Init_CreateWalls()
-{
-	WallsNS.SetNum(Width * (Length + 1));
-	for (int i = 0; i < Width * (Length + 1); ++i)
-	{
-		AWall* NewWall = GetWorld()->SpawnActor<AWall>();
-		WallsNS[i] = NewWall;
-	}
-	WallsWE.SetNum((Width + 1) * Length);
-	for (int i = 0; i < (Width + 1) * Length; ++i)
-	{
-		AWall* NewWall = GetWorld()->SpawnActor<AWall>();
-		WallsWE[i] = NewWall;
-	}
-}
-
-void AMaze::AddCell(int X, int Y)
-{
+	bInitialized = true;
 }
 
 void AMaze::HandleCellAdded_Implementation(ACell* NewCell)
-{
-}
-
-void AMaze::AddWall(int X, int Y)
 {
 }
 
@@ -78,18 +47,192 @@ void AMaze::HandleWallAdded_Implementation(AWall* NewWall)
 
 int AMaze::GetLength() const
 {
-	return 0;
+	return Length;
 }
 
 void AMaze::SetLength(int NewLength)
 {
+	UpdateMazeSize(Width, NewLength);
 }
 
 int AMaze::GetWidth() const
 {
-	return 0;
+	return Width;
 }
 
 void AMaze::SetWidth(int NewWidth)
 {
+	UpdateMazeSize(NewWidth, Length);
+}
+
+void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
+{
+	int OldWidth = Width;
+	int OldLength = Length;
+	const TArray<ACell*> OldCells = Cells;
+	const TArray<AWall*> OldWallsNS = WallsNS;
+	const TArray<AWall*> OldWallsWE = WallsWE;
+
+	Width = NewWidth;
+	Length = NewLength;
+	Cells.SetNumZeroed(NewWidth * NewLength);
+	WallsNS.SetNumZeroed(NewWidth * (NewLength + 1));
+	WallsWE.SetNumZeroed((NewWidth + 1) * NewLength);
+
+	TArray<ACell*> NewCells;
+	TArray<AWall*> NewWalls;
+
+	for (int CellX = 0; CellX < NewWidth; ++CellX)
+	{
+		for (int CellY = 0; CellY < NewLength; ++CellY)
+		{
+			const int CellIdx = GetCellIndex1D(CellX, CellY);
+			check(Cells.IsValidIndex(CellIdx));
+			ACell* NewCell = nullptr;
+
+			if (CellX < OldWidth && CellY < OldLength)
+			{
+				const int OldCellIdx =
+					Index1DFromIndex2D(CellX, OldWidth, CellY, OldLength);
+				check(OldCells.IsValidIndex(OldCellIdx));
+				NewCell = OldCells[OldCellIdx];
+			}
+			else
+			{
+				NewCell = GetWorld()->SpawnActor<ACell>(ACell::StaticClass());
+				NewCells.Add(NewCell);
+			}
+
+			Cells[CellIdx] = NewCell;
+		}
+	}
+
+	// N-S walls
+	for (int WallX = 0; WallX < NewWidth; ++WallX)
+	{
+		for (int WallY = 0; WallY < NewLength + 1; ++WallY)
+		{
+			const int WallIdx = GetNSWallIndex1D(WallX, WallY);
+			check(WallsNS.IsValidIndex(WallIdx));
+			AWall* NewWall = nullptr;
+
+			if (WallX < OldWidth && WallY < OldLength + 1)
+			{
+				const int OldWallIdx =
+					Index1DFromIndex2D(WallX, OldWidth, WallY, OldLength + 1);
+				check(OldWallsNS.IsValidIndex(OldWallIdx));
+				NewWall = OldWallsNS[OldWallIdx];
+			}
+			else
+			{
+				NewWall = GetWorld()->SpawnActor<AWall>(AWall::StaticClass());
+				NewWalls.Add(NewWall);
+			}
+
+			WallsNS[WallIdx] = NewWall;
+		}
+	}
+	// W-E walls
+	for (int WallX = 0; WallX < NewWidth + 1; ++WallX)
+	{
+		for (int WallY = 0; WallY < NewLength; ++WallY)
+		{
+			const int WallIdx = GetWEWallIndex1D(WallX, WallY);
+			check(WallsWE.IsValidIndex(WallIdx));
+
+			AWall* NewWall = nullptr;
+			if (WallX < OldWidth + 1 && WallY < OldLength)
+			{
+				const int OldWallIdx =
+					Index1DFromIndex2D(WallX, OldWidth + 1, WallY, OldLength);
+				check(OldWallsWE.IsValidIndex(OldWallIdx));
+				NewWall = OldWallsWE[OldWallIdx];
+			}
+			else
+			{
+				NewWall = GetWorld()->SpawnActor<AWall>(AWall::StaticClass());
+				NewWalls.Add(NewWall);
+			}
+
+			WallsWE[WallIdx] = NewWall;
+		}
+	}
+
+	// Handle new elements being added
+	for (ACell* NewCell : NewCells)
+	{
+		HandleCellAdded(NewCell);
+	}
+	for (AWall* NewWall: NewWalls)
+	{
+		HandleWallAdded(NewWall);
+	}
+}
+
+ACell* AMaze::GetCell(int X, int Y) const
+{
+	int CellIdx1D = GetCellIndex1D(X, Y);
+	if (!Cells.IsValidIndex(CellIdx1D))
+	{
+		return nullptr;
+	}
+	return Cells[CellIdx1D];
+}
+
+AWall* AMaze::GetWall(int CellX, int CellY, EMazeSide WallSide) const
+{
+	int WallX = CellX;
+	int WallY = CellY;
+	AWall* Result = nullptr;
+
+	int NSWallIndex1D;
+	int WEWallIndex1D;
+	switch (WallSide)
+	{
+	case EMazeSide::EMS_South:
+		++WallY;
+	case EMazeSide::EMS_North:
+		NSWallIndex1D = GetNSWallIndex1D(WallX, WallY);
+		if (WallsNS.IsValidIndex(NSWallIndex1D))
+		{
+			Result = WallsNS[NSWallIndex1D];
+		}
+		break;
+
+	case EMazeSide::EMS_East:
+		++WallX;
+	case EMazeSide::EMS_West:
+		WEWallIndex1D = GetWEWallIndex1D(WallX, WallY);
+		if (WallsWE.IsValidIndex(WEWallIndex1D))
+		{
+			Result = WallsWE[WEWallIndex1D];
+		}
+		break;
+	}
+
+	return Result;
+}
+
+int AMaze::GetNSWallIndex1D(int X, int Y) const
+{
+	return Index1DFromIndex2D(X, Width, Y, Length + 1);
+}
+
+int AMaze::GetWEWallIndex1D(int X, int Y) const
+{
+	return Index1DFromIndex2D(X, Width + 1, Y, Length);
+}
+
+int AMaze::GetCellIndex1D(int X, int Y) const
+{
+	return Index1DFromIndex2D(X, Width, Y, Length);
+}
+
+int AMaze::Index1DFromIndex2D(int X, int SizeX, int Y, int SizeY)
+{
+	if (X >= SizeX || Y >= SizeY)
+	{
+		return -1;
+	}
+	return X * SizeX + Y;
 }
