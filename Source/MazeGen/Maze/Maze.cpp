@@ -5,6 +5,18 @@
 #include "Cell.h"
 #include "Wall.h"
 
+FCellCoordinates::FCellCoordinates()
+{
+	Maze = nullptr;
+	CellColumn = CellRow = -1;
+}
+
+FCellCoordinates::FCellCoordinates(AMaze* Maze, int Column, int Row) : Maze(Maze)
+{
+	CellColumn = Column;
+	CellRow = Row;
+}
+
 AMaze::AMaze()
 {
 	PrimaryActorTick.bCanEverTick = true;

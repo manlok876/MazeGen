@@ -8,6 +8,7 @@
 
 class ACell;
 class AWall;
+class AMaze;
 
 UENUM(BlueprintType)
 enum class EMazeSide : uint8 {
@@ -15,6 +16,23 @@ enum class EMazeSide : uint8 {
 	EMS_East	UMETA(DisplayName = "East"),
 	EMS_South	UMETA(DisplayName = "South"),
 	EMS_West	UMETA(DisplayName = "West")
+};
+
+USTRUCT(BlueprintType)
+struct FCellCoordinates
+{
+	GENERATED_BODY()
+
+public:
+	FCellCoordinates();
+	FCellCoordinates(AMaze* Maze, int Column, int Row);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AMaze* Maze;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int CellColumn;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int CellRow;
 };
 
 UCLASS(BlueprintType, Blueprintable)
