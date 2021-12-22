@@ -103,6 +103,10 @@ private:
 	int GetCellIndex1D(int X, int Y) const;
 	UFUNCTION()
 	static int Index1DFromIndex2D(int X, int SizeX, int Y, int SizeY);
+	UFUNCTION()
+	void GetCellIndex2D(int Idx1D, int& X, int& Y) const;
+	UFUNCTION()
+	static void Index2DFromIndex1D(int Idx1D, int SizeX, int SizeY, int& X, int& Y);
 
 	UFUNCTION()
 	void UpdateMazeSize(int NewWidth, int NewLength);

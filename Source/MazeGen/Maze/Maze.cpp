@@ -296,3 +296,20 @@ int AMaze::Index1DFromIndex2D(int X, int SizeX, int Y, int SizeY)
 	}
 	return X * SizeX + Y;
 }
+
+void AMaze::GetCellIndex2D(int Idx1D, int& X, int& Y) const
+{
+	Index2DFromIndex1D(Idx1D, Width, Length, X, Y);
+}
+
+void AMaze::Index2DFromIndex1D(int Idx1D, int SizeX, int SizeY, int& X, int& Y)
+{
+	if (SizeX < 1 || SizeY < 1 ||
+		Idx1D < 0 || Idx1D > SizeX * SizeY)
+	{
+		X = Y = -1;
+		return;
+	}
+	X = Idx1D % SizeX;
+	Y = Idx1D / SizeX;
+}
