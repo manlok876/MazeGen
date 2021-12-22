@@ -59,6 +59,8 @@ public:
 	ACell* GetCell(int X, int Y) const;
 	UFUNCTION(BlueprintCallable)
 	TArray<ACell*> GetAllCells() const;
+	UFUNCTION(BlueprintPure)
+	FCellCoordinates GetCellCoordinates(ACell* Cell);
 
 	UFUNCTION(BlueprintPure)
 	bool IsValidWall(int CellX, int CellY, EMazeSide WallSide) const;

@@ -201,6 +201,21 @@ TArray<ACell*> AMaze::GetAllCells() const
 	return TArray<ACell*>(Cells);
 }
 
+FCellCoordinates AMaze::GetCellCoordinates(ACell* Cell)
+{
+	int CellIdx1D = Cells.Find(Cell);
+	if (!Cells.IsValidIndex(CellIdx1D))
+	{
+		return FCellCoordinates();
+	}
+
+	int CellRow, CellColumn;
+	GetCellIndex2D(CellIdx1D, CellColumn, CellRow);
+	check(CellColumn >= 0 && CellRow >= 0);
+
+	return FCellCoordinates(this, CellColumn, CellRow);
+}
+
 bool AMaze::IsValidWall(int CellX, int CellY, EMazeSide WallSide) const
 {
 	int WallX = CellX;
