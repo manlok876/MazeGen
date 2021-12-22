@@ -36,9 +36,18 @@ public:
 	void SetWidth(int NewWidth);
 
 	UFUNCTION(BlueprintPure)
-	ACell* GetCell(int X, int Y) const;
+	bool IsValidCell(int X, int Y) const;
 	UFUNCTION(BlueprintPure)
-	AWall* GetWall(int CellX, int CellY, EMazeSide Side) const;
+	ACell* GetCell(int X, int Y) const;
+	UFUNCTION(BlueprintCallable)
+	TArray<ACell*> GetAllCells() const;
+
+	UFUNCTION(BlueprintPure)
+	bool IsValidWall(int CellX, int CellY, EMazeSide WallSide) const;
+	UFUNCTION(BlueprintPure)
+	AWall* GetWall(int CellX, int CellY, EMazeSide WallSide) const;
+	UFUNCTION(BlueprintCallable)
+	TArray<AWall*> GetAllWalls() const;
 
 protected:
 	virtual void BeginPlay() override;

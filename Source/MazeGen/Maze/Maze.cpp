@@ -169,6 +169,11 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 	}
 }
 
+bool AMaze::IsValidCell(int X, int Y) const
+{
+	return Cells.IsValidIndex(GetCellIndex1D(X, Y));
+}
+
 ACell* AMaze::GetCell(int X, int Y) const
 {
 	int CellIdx1D = GetCellIndex1D(X, Y);
@@ -179,37 +184,80 @@ ACell* AMaze::GetCell(int X, int Y) const
 	return Cells[CellIdx1D];
 }
 
-AWall* AMaze::GetWall(int CellX, int CellY, EMazeSide WallSide) const
+TArray<ACell*> AMaze::GetAllCells() const
+{
+	return TArray<ACell*>(Cells);
+}
+
+bool AMaze::IsValidWall(int CellX, int CellY, EMazeSide WallSide) const
 {
 	int WallX = CellX;
 	int WallY = CellY;
-	AWall* Result = nullptr;
 
-	int NSWallIndex1D;
-	int WEWallIndex1D;
+	int WallIndex1D;
 	switch (WallSide)
 	{
 	case EMazeSide::EMS_South:
 		++WallY;
 	case EMazeSide::EMS_North:
-		NSWallIndex1D = GetNSWallIndex1D(WallX, WallY);
-		if (WallsNS.IsValidIndex(NSWallIndex1D))
+		WallIndex1D = GetNSWallIndex1D(WallX, WallY);
+		if (WallsNS.IsValidIndex(WallIndex1D))
 		{
-			Result = WallsNS[NSWallIndex1D];
+			return true;
 		}
 		break;
 
 	case EMazeSide::EMS_East:
 		++WallX;
 	case EMazeSide::EMS_West:
-		WEWallIndex1D = GetWEWallIndex1D(WallX, WallY);
-		if (WallsWE.IsValidIndex(WEWallIndex1D))
+		WallIndex1D = GetWEWallIndex1D(WallX, WallY);
+		if (WallsWE.IsValidIndex(WallIndex1D))
 		{
-			Result = WallsWE[WEWallIndex1D];
+			return true;
 		}
 		break;
 	}
 
+	return false;
+}
+
+AWall* AMaze::GetWall(int CellX, int CellY, EMazeSide WallSide) const
+{
+	int WallX = CellX;
+	int WallY = CellY;
+	AWall* Result = nullptr;
+
+	int WallIndex1D;
+	switch (WallSide)
+	{
+	case EMazeSide::EMS_South:
+		++WallY;
+	case EMazeSide::EMS_North:
+		WallIndex1D = GetNSWallIndex1D(WallX, WallY);
+		if (WallsNS.IsValidIndex(WallIndex1D))
+		{
+			Result = WallsNS[WallIndex1D];
+		}
+		break;
+
+	case EMazeSide::EMS_East:
+		++WallX;
+	case EMazeSide::EMS_West:
+		WallIndex1D = GetWEWallIndex1D(WallX, WallY);
+		if (WallsWE.IsValidIndex(WallIndex1D))
+		{
+			Result = WallsWE[WallIndex1D];
+		}
+		break;
+	}
+
+	return Result;
+}
+
+TArray<AWall*> AMaze::GetAllWalls() const
+{
+	TArray<AWall*> Result(WallsNS);
+	Result.Append(WallsWE);
 	return Result;
 }
 
