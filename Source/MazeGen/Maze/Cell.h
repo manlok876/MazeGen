@@ -10,17 +10,16 @@ UCLASS()
 class MAZEGEN_API ACell : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
+
+public:
 	ACell();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void SetCellSize(const FVector2D& NewSize);
+
+protected:
+	virtual void BeginPlay() override;
 
 };
