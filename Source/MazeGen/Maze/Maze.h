@@ -93,6 +93,8 @@ public:
 	AWall* GetWall(int CellX, int CellY, EMazeSide WallSide) const;
 	UFUNCTION(BlueprintCallable)
 	TArray<AWall*> GetAllWalls() const;
+	UFUNCTION(BlueprintPure)
+	FWallCoordinates GetWallCoordinates(AWall* Wall);
 
 protected:
 	virtual void BeginPlay() override;
@@ -123,6 +125,8 @@ private:
 	int GetNSWallIndex1D(int X, int Y) const;
 	UFUNCTION()
 	int GetWEWallIndex1D(int X, int Y) const;
+	UFUNCTION()
+	void GetWallIndex2D(int Idx1D, EWallDirection WallDir, int& X, int& Y) const;
 
 	UPROPERTY()
 	TArray<ACell*> Cells;

@@ -17,6 +17,20 @@ FCellCoordinates::FCellCoordinates(AMaze* Maze, int Column, int Row) : Maze(Maze
 	CellRow = Row;
 }
 
+FWallCoordinates::FWallCoordinates()
+{
+	Maze = nullptr;
+	WallColumn = WallRow = -1;
+	WallDirection = EWallDirection::EWD_NS;
+}
+
+FWallCoordinates::FWallCoordinates(AMaze* Maze, int Column, int Row, EWallDirection Direction) : Maze(Maze)
+{
+	WallColumn = Column;
+	WallRow = Row;
+	WallDirection = Direction;
+}
+
 AMaze::AMaze()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -288,6 +302,33 @@ TArray<AWall*> AMaze::GetAllWalls() const
 	return Result;
 }
 
+FWallCoordinates AMaze::GetWallCoordinates(AWall* Wall)
+{
+	int NSWallIdx1D = WallsNS.Find(Wall);
+	int WEWallIdx1D = WallsWE.Find(Wall);
+
+	int WallRow, WallColumn;
+	EWallDirection WallDirection;
+	if (WallsNS.IsValidIndex(NSWallIdx1D))
+	{
+		WallDirection = EWallDirection::EWD_NS;
+		GetWallIndex2D(NSWallIdx1D, WallDirection, WallColumn, WallRow);
+		check(WallColumn >= 0 && WallRow >= 0);
+	}
+	else if (WallsWE.IsValidIndex(WEWallIdx1D))
+	{
+		WallDirection = EWallDirection::EWD_WE;
+		GetWallIndex2D(WEWallIdx1D, WallDirection, WallColumn, WallRow);
+		check(WallColumn >= 0 && WallRow >= 0);
+	}
+	else
+	{
+		return FWallCoordinates();
+	}
+
+	return FWallCoordinates(this, WallColumn, WallRow, WallDirection);
+}
+
 int AMaze::GetNSWallIndex1D(int X, int Y) const
 {
 	return Index1DFromIndex2D(X, Width, Y, Length + 1);
@@ -296,6 +337,19 @@ int AMaze::GetNSWallIndex1D(int X, int Y) const
 int AMaze::GetWEWallIndex1D(int X, int Y) const
 {
 	return Index1DFromIndex2D(X, Width + 1, Y, Length);
+}
+
+void AMaze::GetWallIndex2D(int Idx1D, EWallDirection WallDir, int& X, int& Y) const
+{
+	switch (WallDir)
+	{
+	case EWallDirection::EWD_NS:
+		Index2DFromIndex1D(Idx1D, Width, Length + 1, X, Y);
+		break;
+	case EWallDirection::EWD_WE:
+		Index2DFromIndex1D(Idx1D, Width + 1, Length, X, Y);
+		break;
+	}
 }
 
 int AMaze::GetCellIndex1D(int X, int Y) const
