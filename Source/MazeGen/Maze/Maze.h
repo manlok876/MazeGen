@@ -10,6 +10,16 @@ class ACell;
 class AWall;
 class AMaze;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMazeUpdatedSignature, AMaze*, Maze);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnMazeSizeChangedSignature, AMaze*, Maze, FIntPoint, OldSize, FIntPoint, NewSize);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsAddedSignature, AMaze*, Maze, TArray<ACell*>, AddedCells);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsRemovedSignature, AMaze*, Maze, TArray<ACell*>, RemovedCells);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsAddedSignature, AMaze*, Maze, TArray<AWall*>, AddedCells);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsRemovedSignature, AMaze*, Maze, TArray<AWall*>, RemovedCells);
+
 UENUM(BlueprintType)
 enum class EMazeSide : uint8 {
 	EMS_North	UMETA(DisplayName = "North"),
@@ -95,6 +105,21 @@ public:
 	TArray<AWall*> GetAllWalls() const;
 	UFUNCTION(BlueprintPure)
 	FWallCoordinates GetWallCoordinates(AWall* Wall);
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnMazeUpdatedSignature OnMazeUpdatedDispatcher;
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnMazeSizeChangedSignature OnMazeSizeChangedDispatcher;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnMazeCellsAddedSignature OnMazeCellsAddedDispatcher;
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnMazeCellsRemovedSignature OnMazeCellsRemovedDispatcher;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnMazeWallsAddedSignature OnMazeWallsAddedDispatcher;
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnMazeWallsRemovedSignature OnMazeWallsRemovedDispatcher;
 
 protected:
 	virtual void BeginPlay() override;
