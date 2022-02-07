@@ -93,11 +93,15 @@ void AMaze::SetWidth(int NewWidth)
 
 void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 {
+	if (NewWidth == Width && NewLength == Length)
+	{
+		return;
+	}
 	int OldWidth = Width;
 	int OldLength = Length;
-	const TArray<ACell*> OldCells = Cells;
-	const TArray<AWall*> OldWallsNS = WallsNS;
-	const TArray<AWall*> OldWallsWE = WallsWE;
+	TArray<ACell*> OldCells = Cells;
+	TArray<AWall*> OldWallsNS = WallsNS;
+	TArray<AWall*> OldWallsWE = WallsWE;
 
 	Width = NewWidth;
 	Length = NewLength;
@@ -107,6 +111,9 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 
 	TArray<ACell*> NewCells;
 	TArray<AWall*> NewWalls;
+
+	TArray<ACell*> RemovedCells;
+	TArray<AWall*> RemovedWalls;
 
 	for (int CellX = 0; CellX < NewWidth; ++CellX)
 	{
@@ -122,6 +129,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 					Index1DFromIndex2D(CellX, OldWidth, CellY, OldLength);
 				check(OldCells.IsValidIndex(OldCellIdx));
 				NewCell = OldCells[OldCellIdx];
+				OldCells[OldCellIdx] = nullptr;
 			}
 			else
 			{
@@ -148,6 +156,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 					Index1DFromIndex2D(WallX, OldWidth, WallY, OldLength + 1);
 				check(OldWallsNS.IsValidIndex(OldWallIdx));
 				NewWall = OldWallsNS[OldWallIdx];
+				OldWallsNS[OldWallIdx] = nullptr;
 			}
 			else
 			{
@@ -173,6 +182,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 					Index1DFromIndex2D(WallX, OldWidth + 1, WallY, OldLength);
 				check(OldWallsWE.IsValidIndex(OldWallIdx));
 				NewWall = OldWallsWE[OldWallIdx];
+				OldWallsWE[OldWallIdx] = nullptr;
 			}
 			else
 			{
@@ -181,6 +191,29 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 			}
 
 			WallsWE[WallIdx] = NewWall;
+		}
+	}
+
+	for (ACell* OldCell : OldCells)
+	{
+		if (OldCell != nullptr)
+		{
+			RemovedCells.Add(OldCell);
+		}
+	}
+
+	for (AWall* OldWall : OldWallsNS)
+	{
+		if (OldWall != nullptr)
+		{
+			RemovedWalls.Add(OldWall);
+		}
+	}
+	for (AWall* OldWall : OldWallsWE)
+	{
+		if (OldWall != nullptr)
+		{
+			RemovedWalls.Add(OldWall);
 		}
 	}
 
@@ -193,11 +226,37 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 	{
 		HandleWallAdded(NewWall);
 	}
+
+	if (NewCells.Num() > 0 && OnMazeCellsAddedDispatcher.IsBound())
+	{
+		OnMazeCellsAddedDispatcher.Broadcast(this, NewCells);
+	}
+	if (RemovedCells.Num() > 0 && OnMazeCellsRemovedDispatcher.IsBound())
+	{
+		OnMazeCellsRemovedDispatcher.Broadcast(this, RemovedCells);
+	}
+	if (NewWalls.Num() > 0 && OnMazeWallsAddedDispatcher.IsBound())
+	{
+		OnMazeWallsAddedDispatcher.Broadcast(this, NewWalls);
+	}
+	if (RemovedWalls.Num() > 0 && OnMazeWallsRemovedDispatcher.IsBound())
+	{
+		OnMazeWallsRemovedDispatcher.Broadcast(this, RemovedWalls);
+	}
+	if (OnMazeSizeChangedDispatcher.IsBound())
+	{
+		OnMazeSizeChangedDispatcher.Broadcast(this,
+			FIntPoint(OldWidth, OldLength), FIntPoint(NewWidth, NewLength));
+	}
+	if (OnMazeUpdatedDispatcher.IsBound())
+	{
+		OnMazeUpdatedDispatcher.Broadcast(this);
+	}
 }
 
-bool AMaze::IsValidCell(int X, int Y) const
+bool AMaze::IsValidCell(int Column, int Row) const
 {
-	return Cells.IsValidIndex(GetCellIndex1D(X, Y));
+	return Cells.IsValidIndex(GetCellIndex1D(Column, Row));
 }
 
 ACell* AMaze::GetCell(int X, int Y) const
