@@ -89,9 +89,9 @@ public:
 	void SetWidth(int NewWidth);
 
 	UFUNCTION(BlueprintPure)
-	bool IsValidCell(int X, int Y) const;
+	bool IsValidCell(int Column, int Row) const;
 	UFUNCTION(BlueprintPure)
-	ACell* GetCell(int X, int Y) const;
+	ACell* GetCell(int Column, int Row) const;
 	UFUNCTION(BlueprintCallable)
 	TArray<ACell*> GetAllCells() const;
 	UFUNCTION(BlueprintPure)
