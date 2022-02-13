@@ -14,11 +14,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMazeUpdatedSignature, AMaze*, Maz
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnMazeSizeChangedSignature, AMaze*, Maze, FIntPoint, OldSize, FIntPoint, NewSize);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsAddedSignature, AMaze*, Maze, TArray<ACell*>, AddedCells);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsRemovedSignature, AMaze*, Maze, TArray<ACell*>, RemovedCells);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsAddedSignature, AMaze*, Maze, const TArray<ACell*>&, AddedCells);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsRemovedSignature, AMaze*, Maze, const TArray<ACell*>&, RemovedCells);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsAddedSignature, AMaze*, Maze, TArray<AWall*>, AddedCells);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsRemovedSignature, AMaze*, Maze, TArray<AWall*>, RemovedCells);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsAddedSignature, AMaze*, Maze, const TArray<AWall*>&, AddedWalls);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsRemovedSignature, AMaze*, Maze, const TArray<AWall*>&, RemovedWalls);
 
 UENUM(BlueprintType)
 enum class EMazeSide : uint8 {
