@@ -20,6 +20,13 @@ void AWall::Tick(float DeltaTime)
 
 }
 
+void AWall::SetWallSize_Implementation(float NewWidth, float NewHeight, float NewThickness)
+{
+	SetWallWidth(NewWidth);
+	SetWallThickness(NewThickness);
+	SetWallHeight(NewHeight);
+}
+
 EWallState AWall::GetWallState() const
 {
 	return State;

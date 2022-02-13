@@ -33,6 +33,8 @@ public:
 	void SetWallThickness(float NewThickness);
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetWallHeight(float NewHeight);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetWallSize(float NewWidth, float NewHeight, float NewThickness);
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetWallFacingDirection(const FVector& NewFacingDir);
 
