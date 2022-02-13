@@ -94,6 +94,11 @@ void AMaze::SetWidth(int NewWidth)
 	UpdateMazeSize(NewWidth, Length);
 }
 
+void AMaze::SetSize(int NewWidth, int NewLength)
+{
+	UpdateMazeSize(NewWidth, NewLength);
+}
+
 void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 {
 	if (NewWidth == Width && NewLength == Length)

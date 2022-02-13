@@ -93,6 +93,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidth(int NewWidth);
 
+	UFUNCTION(BlueprintCallable)
+	void SetSize(int NewWidth, int NewLength);
+
 	UFUNCTION(BlueprintPure)
 	bool IsValidCell(int Column, int Row) const;
 	UFUNCTION(BlueprintPure)
