@@ -58,8 +58,8 @@ void AMaze::Tick(float DeltaTime)
 
 void AMaze::Init_Implementation(int W, int L)
 {
-	W = 0;
-	L = 0;
+	Width = 0;
+	Length = 0;
 
 	UpdateMazeSize(W, L);
 
