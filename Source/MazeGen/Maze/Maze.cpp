@@ -35,6 +35,9 @@ AMaze::AMaze()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	CellClass = ACell::StaticClass();
+	WallClass = AWall::StaticClass();
+
 	bInitialized = false;
 	Width = 10;
 	Length = 10;
@@ -133,7 +136,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 			}
 			else
 			{
-				NewCell = GetWorld()->SpawnActor<ACell>(ACell::StaticClass());
+				NewCell = GetWorld()->SpawnActor<ACell>(CellClass);
 				NewCells.Add(NewCell);
 			}
 
@@ -160,7 +163,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 			}
 			else
 			{
-				NewWall = GetWorld()->SpawnActor<AWall>(AWall::StaticClass());
+				NewWall = GetWorld()->SpawnActor<AWall>(WallClass);
 				NewWalls.Add(NewWall);
 			}
 
@@ -186,7 +189,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 			}
 			else
 			{
-				NewWall = GetWorld()->SpawnActor<AWall>(AWall::StaticClass());
+				NewWall = GetWorld()->SpawnActor<AWall>(WallClass);
 				NewWalls.Add(NewWall);
 			}
 

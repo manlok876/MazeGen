@@ -80,6 +80,11 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<ACell> CellClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AWall> WallClass;
+
 	int GetLength() const;
 	UFUNCTION(BlueprintCallable)
 	void SetLength(int NewLength);
