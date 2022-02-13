@@ -252,6 +252,22 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 	{
 		OnMazeUpdatedDispatcher.Broadcast(this);
 	}
+
+	for (AWall* OldWall : RemovedWalls)
+	{
+		if (IsValid(OldWall))
+		{
+			OldWall->Destroy();
+		}
+	}
+	for (ACell* OldCell : RemovedCells)
+	{
+		if (IsValid(OldCell))
+		{
+			OldCell->Destroy();
+		}
+	}
+
 }
 
 bool AMaze::IsValidCell(int Column, int Row) const
