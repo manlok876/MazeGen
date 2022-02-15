@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Cell.h"
+#include "Wall.h"
 #include "MazeStructs.generated.h"
 
-class AWall;
+class AMaze;
 
 USTRUCT(BlueprintType)
 struct FCellWalls
@@ -24,4 +26,28 @@ public:
 	AWall* South;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AWall* West;
+};
+
+
+USTRUCT(BlueprintType)
+struct FMazeData
+{
+	GENERATED_BODY()
+
+public:
+	FMazeData();
+	FMazeData(const AMaze* Maze);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Width;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Length;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<ECellState> CellsInfo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<EWallState> NSWallsInfo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<EWallState> WEWallsInfo;
 };

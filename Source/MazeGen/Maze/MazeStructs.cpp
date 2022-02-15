@@ -2,6 +2,7 @@
 
 
 #include "MazeStructs.h"
+#include "Maze.h"
 
 FCellWalls::FCellWalls()
 {
@@ -14,4 +15,33 @@ FCellWalls::FCellWalls(AWall* NorthWall, AWall* EastWall, AWall* SouthWall, AWal
 	East = EastWall;
 	South = SouthWall;
 	West = WestWall;
+}
+
+FMazeData::FMazeData()
+{
+	Width = Length = 0;
+}
+
+FMazeData::FMazeData(const AMaze* Maze)
+{
+	Width = Maze->GetWidth();
+	Length = Maze->GetLength();
+
+	CellsInfo.Reserve(Width * Length);
+	for (const ACell* Cell : Maze->GetAllCells())
+	{
+		CellsInfo.Add(Cell->GetCellState());
+	}
+
+	NSWallsInfo.Reserve(Width * (Length + 1));
+	for (const AWall* Wall : Maze->GetWallsNS())
+	{
+		NSWallsInfo.Add(Wall->GetWallState());
+	}
+
+	WEWallsInfo.Reserve((Width + 1) * Length);
+	for (const AWall* Wall : Maze->GetWallsWE())
+	{
+		WEWallsInfo.Add(Wall->GetWallState());
+	}
 }
