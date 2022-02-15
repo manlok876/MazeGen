@@ -19,4 +19,9 @@ class MAZEGEN_API UMazeUtils : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintPure)
 	static AWall* GetWall(const FCellWalls& Walls, EMazeSide Side);
+
+	UFUNCTION(BlueprintCallable)
+	static FMazeData SerializeMaze(const AMaze* Maze);
+	UFUNCTION(BlueprintCallable)
+	static void RebuildMazeFromData(AMaze* Maze, const FMazeData& Data);
 };
