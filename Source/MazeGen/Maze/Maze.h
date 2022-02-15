@@ -111,6 +111,10 @@ public:
 	AWall* GetWall(int CellX, int CellY, EMazeSide WallSide) const;
 	UFUNCTION(BlueprintCallable)
 	TArray<AWall*> GetAllWalls() const;
+	UFUNCTION(BlueprintCallable)
+	TArray<AWall*> GetWallsNS() const;
+	UFUNCTION(BlueprintCallable)
+	TArray<AWall*> GetWallsWE() const;
 	UFUNCTION(BlueprintPure)
 	FWallCoordinates GetWallCoordinates(AWall* Wall);
 

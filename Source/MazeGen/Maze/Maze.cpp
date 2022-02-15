@@ -385,6 +385,16 @@ TArray<AWall*> AMaze::GetAllWalls() const
 	return Result;
 }
 
+TArray<AWall*> AMaze::GetWallsNS() const
+{
+	return WallsNS;
+}
+
+TArray<AWall*> AMaze::GetWallsWE() const
+{
+	return WallsWE;
+}
+
 FWallCoordinates AMaze::GetWallCoordinates(AWall* Wall)
 {
 	int NSWallIdx1D = WallsNS.Find(Wall);
