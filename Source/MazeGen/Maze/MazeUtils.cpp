@@ -64,6 +64,7 @@ void UMazeUtils::RebuildMazeFromData(AMaze* Maze, const FMazeData& Data)
 	int WEWallIdx = 0;
 	const TArray<EWallState>& WEWallsInfo = Data.WEWallsInfo;
 	for (AWall* Wall : Maze->GetWallsNS())
+	for (AWall* Wall : Maze->GetWallsWE())
 	{
 		Wall->SetWallState(WEWallsInfo[WEWallIdx]);
 		++WEWallIdx;
