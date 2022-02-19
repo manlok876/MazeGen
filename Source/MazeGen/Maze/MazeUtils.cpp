@@ -3,6 +3,7 @@
 
 #include "MazeUtils.h"
 #include "Maze.h"
+#include "JsonObjectConverter.h"
 
 AWall* UMazeUtils::GetWall(const FCellWalls& Walls, EMazeSide Side)
 {
@@ -63,10 +64,21 @@ void UMazeUtils::RebuildMazeFromData(AMaze* Maze, const FMazeData& Data)
 
 	int WEWallIdx = 0;
 	const TArray<EWallState>& WEWallsInfo = Data.WEWallsInfo;
-	for (AWall* Wall : Maze->GetWallsNS())
 	for (AWall* Wall : Maze->GetWallsWE())
 	{
 		Wall->SetWallState(WEWallsInfo[WEWallIdx]);
 		++WEWallIdx;
 	}
+}
+
+FString UMazeUtils::MazeDataToJSON(const FMazeData& Data)
+{
+	FString Result;
+	FJsonObjectConverter::UStructToJsonObjectString(Data, Result);
+	return Result;
+}
+
+bool UMazeUtils::MazeDataFromJSON(const FString& JsonString, FMazeData& Result)
+{
+	return FJsonObjectConverter::JsonObjectStringToUStruct(JsonString, &Result, 0, 0);
 }

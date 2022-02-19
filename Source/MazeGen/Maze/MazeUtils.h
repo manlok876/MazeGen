@@ -24,4 +24,9 @@ public:
 	static FMazeData SerializeMaze(const AMaze* Maze);
 	UFUNCTION(BlueprintCallable)
 	static void RebuildMazeFromData(AMaze* Maze, const FMazeData& Data);
+
+	UFUNCTION(BlueprintCallable)
+	static FString MazeDataToJSON(const FMazeData& Data);
+	UFUNCTION(BlueprintCallable)
+	static bool MazeDataFromJSON(const FString& JsonString, FMazeData& Result);
 };
