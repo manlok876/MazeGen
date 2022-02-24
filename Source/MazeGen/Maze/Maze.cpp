@@ -70,7 +70,15 @@ void AMaze::HandleCellAdded_Implementation(ACell* NewCell)
 {
 }
 
+void AMaze::UpdateCell_Implementation(ACell* CellToUpdate)
+{
+}
+
 void AMaze::HandleWallAdded_Implementation(AWall* NewWall)
+{
+}
+
+void AMaze::UpdateWall_Implementation(AWall* WallToUpdate)
 {
 }
 
@@ -123,6 +131,9 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 	TArray<ACell*> RemovedCells;
 	TArray<AWall*> RemovedWalls;
 
+	TArray<ACell*> RetainedCells;
+	TArray<AWall*> RetainedWalls;
+
 	for (int CellX = 0; CellX < NewWidth; ++CellX)
 	{
 		for (int CellY = 0; CellY < NewLength; ++CellY)
@@ -138,6 +149,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 				check(OldCells.IsValidIndex(OldCellIdx));
 				NewCell = OldCells[OldCellIdx];
 				OldCells[OldCellIdx] = nullptr;
+				RetainedCells.Add(NewCell);
 			}
 			else
 			{
@@ -165,6 +177,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 				check(OldWallsNS.IsValidIndex(OldWallIdx));
 				NewWall = OldWallsNS[OldWallIdx];
 				OldWallsNS[OldWallIdx] = nullptr;
+				RetainedWalls.Add(NewWall);
 			}
 			else
 			{
@@ -191,6 +204,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 				check(OldWallsWE.IsValidIndex(OldWallIdx));
 				NewWall = OldWallsWE[OldWallIdx];
 				OldWallsWE[OldWallIdx] = nullptr;
+				RetainedWalls.Add(NewWall);
 			}
 			else
 			{
@@ -223,6 +237,16 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 		{
 			RemovedWalls.Add(OldWall);
 		}
+	}
+
+	// Update old cells/walls positions etc.
+	for (ACell* RetainedCell : RetainedCells)
+	{
+		UpdateCell(RetainedCell);
+	}
+	for (AWall* RetainedWall : RetainedWalls)
+	{
+		UpdateWall(RetainedWall);
 	}
 
 	// Handle new elements being added

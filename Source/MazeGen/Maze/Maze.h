@@ -141,9 +141,13 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void HandleCellAdded(ACell* NewCell);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void UpdateCell(ACell* CellToUpdate);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void HandleWallAdded(AWall* NewWall);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void UpdateWall(AWall* WallToUpdate);
 
 private:
 	UPROPERTY()
