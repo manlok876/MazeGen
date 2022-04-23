@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MazeUtils.h"
-#include "Maze.h"
+#include "Maze/MazeUtils.h"
+#include "Maze/Maze.h"
 #include "JsonObjectConverter.h"
 
 AWall* UMazeUtils::GetWall(const FCellWalls& Walls, EMazeSide Side)

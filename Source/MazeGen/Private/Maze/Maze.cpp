@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Maze.h"
-#include "Cell.h"
-#include "Wall.h"
+#include "Maze/Maze.h"
+#include "Maze/Cell.h"
+#include "Maze/Wall.h"
 
 FCellCoordinates::FCellCoordinates()
 {
