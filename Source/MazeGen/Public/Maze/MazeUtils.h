@@ -20,13 +20,13 @@ public:
 	UFUNCTION(BlueprintPure)
 	static AWall* GetWall(const FCellWalls& Walls, EMazeSide Side);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Maze|Serialization")
 	static FMazeData SerializeMaze(const AMaze* Maze);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Maze|Serialization")
 	static void RebuildMazeFromData(AMaze* Maze, const FMazeData& Data);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Maze|Serialization")
 	static FString MazeDataToJSON(const FMazeData& Data);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Maze|Serialization")
 	static bool MazeDataFromJSON(const FString& JsonString, FMazeData& Result);
 };
