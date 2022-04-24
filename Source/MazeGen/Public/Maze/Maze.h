@@ -99,7 +99,11 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsValidCell(int Column, int Row) const;
 	UFUNCTION(BlueprintPure)
+	bool ContainsCell(ACell* Cell) const;
+	UFUNCTION(BlueprintPure)
 	ACell* GetCell(int Column, int Row) const;
+	UFUNCTION(BlueprintPure)
+	ACell* GetCellByCoords(const FCellCoordinates& Coordinates) const;
 	UFUNCTION(BlueprintCallable)
 	TArray<ACell*> GetAllCells() const;
 	UFUNCTION(BlueprintPure)
@@ -108,7 +112,11 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsValidWall(int CellX, int CellY, EMazeSide WallSide) const;
 	UFUNCTION(BlueprintPure)
-	AWall* GetWall(int CellX, int CellY, EMazeSide WallSide) const;
+	bool ContainsWall(AWall* Wall) const;
+	UFUNCTION(BlueprintPure)
+	AWall* GetWall(int CellColumn, int CellRow, EMazeSide WallSide) const;
+	UFUNCTION(BlueprintPure)
+	AWall* GetWallByCoords(const FWallCoordinates& Coordinates) const;
 	UFUNCTION(BlueprintCallable)
 	TArray<AWall*> GetAllWalls() const;
 	UFUNCTION(BlueprintCallable)
@@ -163,20 +171,20 @@ private:
 	UPROPERTY()
 	TArray<AWall*> WallsWE;
 	UFUNCTION()
-	int GetNSWallIndex1D(int X, int Y) const;
+	int GetNSWallIndex1D(int Column, int Row) const;
 	UFUNCTION()
-	int GetWEWallIndex1D(int X, int Y) const;
+	int GetWEWallIndex1D(int Column, int Row) const;
 	UFUNCTION()
-	void GetWallIndex2D(int Idx1D, EWallDirection WallDir, int& X, int& Y) const;
+	void GetWallIndex2D(int Idx1D, EWallDirection WallDir, int& Column, int& Row) const;
 
 	UPROPERTY()
 	TArray<ACell*> Cells;
 	UFUNCTION()
-	int GetCellIndex1D(int X, int Y) const;
+	int GetCellIndex1D(int Column, int Row) const;
 	UFUNCTION()
 	static int Index1DFromIndex2D(int X, int SizeX, int Y, int SizeY);
 	UFUNCTION()
-	void GetCellIndex2D(int Idx1D, int& X, int& Y) const;
+	void GetCellIndex2D(int Idx1D, int& Column, int& Row) const;
 	UFUNCTION()
 	static void Index2DFromIndex1D(int Idx1D, int SizeX, int SizeY, int& X, int& Y);
 

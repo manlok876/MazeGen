@@ -307,9 +307,19 @@ bool AMaze::IsValidCell(int Column, int Row) const
 	return Cells.IsValidIndex(GetCellIndex1D(Column, Row));
 }
 
-ACell* AMaze::GetCell(int X, int Y) const
+bool AMaze::ContainsCell(ACell* Cell) const
 {
-	int CellIdx1D = GetCellIndex1D(X, Y);
+	if (!IsValid(Cell))
+	{
+		return nullptr;
+	}
+
+	return Cells.Contains(Cell);
+}
+
+ACell* AMaze::GetCell(int Column, int Row) const
+{
+	int CellIdx1D = GetCellIndex1D(Column, Row);
 	if (!Cells.IsValidIndex(CellIdx1D))
 	{
 		return nullptr;
@@ -317,9 +327,19 @@ ACell* AMaze::GetCell(int X, int Y) const
 	return Cells[CellIdx1D];
 }
 
+ACell* AMaze::GetCellByCoords(const FCellCoordinates& Coordinates) const
+{
+	if (Coordinates.Maze != this)
+	{
+		return nullptr;
+	}
+
+	return GetCell(Coordinates.CellColumn, Coordinates.CellRow);
+}
+
 TArray<ACell*> AMaze::GetAllCells() const
 {
-	return TArray<ACell*>(Cells);
+	return Cells;
 }
 
 FCellCoordinates AMaze::GetCellCoordinates(ACell* Cell)
@@ -369,10 +389,20 @@ bool AMaze::IsValidWall(int CellColumn, int CellRow, EMazeSide WallSide) const
 	return false;
 }
 
-AWall* AMaze::GetWall(int CellX, int CellY, EMazeSide WallSide) const
+bool AMaze::ContainsWall(AWall* Wall) const
 {
-	int WallX = CellX;
-	int WallY = CellY;
+	if (!IsValid(Wall))
+	{
+		return nullptr;
+	}
+
+	return WallsNS.Contains(Wall) || WallsWE.Contains(Wall);
+}
+
+AWall* AMaze::GetWall(int CellColumn, int CellRow, EMazeSide WallSide) const
+{
+	int WallX = CellColumn;
+	int WallY = CellRow;
 	AWall* Result = nullptr;
 
 	int WallIndex1D;
@@ -392,6 +422,37 @@ AWall* AMaze::GetWall(int CellX, int CellY, EMazeSide WallSide) const
 		++WallX;
 	case EMazeSide::EMS_West:
 		WallIndex1D = GetWEWallIndex1D(WallX, WallY);
+		if (WallsWE.IsValidIndex(WallIndex1D))
+		{
+			Result = WallsWE[WallIndex1D];
+		}
+		break;
+	}
+
+	return Result;
+}
+
+AWall* AMaze::GetWallByCoords(const FWallCoordinates& Coordinates) const
+{
+	if (Coordinates.Maze != this)
+	{
+		return nullptr;
+	}
+
+	AWall* Result = nullptr;
+	int WallIndex1D;
+	switch (Coordinates.WallDirection)
+	{
+	case EWallDirection::EWD_NS:
+		WallIndex1D = GetNSWallIndex1D(Coordinates.WallColumn, Coordinates.WallRow);
+		if (WallsNS.IsValidIndex(WallIndex1D))
+		{
+			Result = WallsNS[WallIndex1D];
+		}
+		break;
+
+	case EWallDirection::EWD_WE:
+		WallIndex1D = GetWEWallIndex1D(Coordinates.WallColumn, Coordinates.WallRow);
 		if (WallsWE.IsValidIndex(WallIndex1D))
 		{
 			Result = WallsWE[WallIndex1D];
@@ -484,9 +545,9 @@ int AMaze::Index1DFromIndex2D(int X, int SizeX, int Y, int SizeY)
 	return Y * SizeX + X;
 }
 
-void AMaze::GetCellIndex2D(int Idx1D, int& X, int& Y) const
+void AMaze::GetCellIndex2D(int Idx1D, int& Column, int& Row) const
 {
-	Index2DFromIndex1D(Idx1D, Width, Length, X, Y);
+	Index2DFromIndex1D(Idx1D, Width, Length, Column, Row);
 }
 
 void AMaze::Index2DFromIndex1D(int Idx1D, int SizeX, int SizeY, int& X, int& Y)
