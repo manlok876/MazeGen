@@ -2,6 +2,7 @@
 
 
 #include "Metrics/MetricComponent.h"
+#include "Metrics/MazeMetricLocal.h"
 #include "Maze/Maze.h"
 
 UMetricComponent::UMetricComponent()
@@ -18,7 +19,7 @@ void UMetricComponent::BeginPlay()
 
 }
 
-void UMetricComponent::SetMetricObject(UObject* NewMetricObject)
+void UMetricComponent::SetMetricObject(UMazeMetricLocal* NewMetricObject)
 {
 	if (NewMetricObject == MetricObject)
 	{
@@ -51,7 +52,7 @@ void UMetricComponent::SetMetricObject(UObject* NewMetricObject)
 	}
 }
 
-void UMetricComponent::SetUsedMetric(TSubclassOf<UObject> NewMetricClass)
+void UMetricComponent::SetUsedMetric(TSubclassOf<UMazeMetricLocal> NewMetricClass)
 {
 	if (NewMetricClass == MetricClass)
 	{
@@ -69,7 +70,17 @@ void UMetricComponent::SetUsedMetric(TSubclassOf<UObject> NewMetricClass)
 		UE_LOG(LogTemp, Error, TEXT("UMetricComponent::SetUsedMetric: Provided class does not implement LocalMetricInterface, aborting"));
 	}
 
-	SetMetricObject(NewObject<UObject>(this, MetricClass));
+	SetMetricObject(NewObject<UMazeMetricLocal>(this, MetricClass));
+}
+
+void UMetricComponent::RunMetric()
+{
+	if (!IsValid(MetricObject))
+	{
+		return;
+	}
+
+	MetricObject->RunMetricForMaze(Maze);
 }
 
 float UMetricComponent::GetMetricForCell_Implementation(ACell* Cell)

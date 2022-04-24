@@ -8,6 +8,7 @@
 #include "MetricComponent.generated.h"
 
 class AMaze;
+class UMazeMetricLocal;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMetricClassChangedSignature, UMetricComponent*, MetricComponent);
 
@@ -22,7 +23,9 @@ public:
 	UMetricComponent();
 
 	UFUNCTION(BlueprintCallable, Category = "Metrics")
-	void SetUsedMetric(TSubclassOf<UObject> NewMetricClass);
+	void SetUsedMetric(TSubclassOf<UMazeMetricLocal> NewMetricClass);
+	UFUNCTION(BlueprintCallable, Category = "Metrics")
+	void RunMetric();
 
 	virtual float GetMetricForCell_Implementation(ACell* Cell) override;
 
@@ -37,12 +40,12 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadOnly)
-	TSubclassOf<UObject> MetricClass;
+	TSubclassOf<UMazeMetricLocal> MetricClass;
 
 	UFUNCTION()
-	void SetMetricObject(UObject* NewMetricObject);
+	void SetMetricObject(UMazeMetricLocal* NewMetricObject);
 	UPROPERTY(BlueprintReadOnly)
-	UObject* MetricObject;
+	UMazeMetricLocal* MetricObject;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMaze* Maze;
