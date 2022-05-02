@@ -49,6 +49,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FWallStateChangedSignature WallStateChangedDispatcher;
 
+	UFUNCTION(BlueprintPure)
+	bool IsBlocking() const;
+
 protected:
 	virtual void BeginPlay() override;
 

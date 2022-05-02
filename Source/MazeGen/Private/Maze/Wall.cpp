@@ -52,3 +52,8 @@ void AWall::SetWallState(EWallState NewState)
 		WallUpdatedDispatcher.Broadcast(this);
 	}
 }
+
+bool AWall::IsBlocking() const
+{
+	return GetWallState() != EWallState::EWS_Open;
+}
