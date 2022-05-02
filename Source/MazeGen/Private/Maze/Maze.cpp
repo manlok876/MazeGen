@@ -357,6 +357,58 @@ FCellCoordinates AMaze::GetCellCoordinates(ACell* Cell)
 	return FCellCoordinates(this, CellColumn, CellRow);
 }
 
+bool AMaze::GetNeighboringCells(ACell* TargetCell, TMap<EMazeSide, ACell*>& NeighborsMap, bool bOnlyReachable)
+{
+	NeighborsMap.Empty();
+	if (!IsValid(TargetCell))
+	{
+		return false;
+	}
+
+	if (!ContainsCell(TargetCell))
+	{
+		return false;
+	}
+
+	FCellCoordinates TargetCellCoords = GetCellCoordinates(TargetCell);
+	int CellRow = TargetCellCoords.CellRow;
+	int CellColumn = TargetCellCoords.CellColumn;
+	// Already checked that this cell is in this maze
+	check(CellRow >= 0 && CellColumn >= 0);
+
+	NeighborsMap[EMazeSide::EMS_North] = GetCell(CellColumn, CellRow - 1);
+	NeighborsMap[EMazeSide::EMS_South] = GetCell(CellColumn, CellRow + 1);
+	NeighborsMap[EMazeSide::EMS_West] = GetCell(CellColumn - 1, CellRow);
+	NeighborsMap[EMazeSide::EMS_East] = GetCell(CellColumn + 1, CellRow);
+
+	if (!bOnlyReachable)
+	{
+		return true;
+	}
+
+	FCellWalls CellWalls;
+	GetCellWalls(TargetCell, CellWalls);
+
+	if (IsValid(CellWalls.North) && CellWalls.North->IsBlocking())
+	{
+		NeighborsMap[EMazeSide::EMS_North] = nullptr;
+	}
+	if (IsValid(CellWalls.East) && CellWalls.East->IsBlocking())
+	{
+		NeighborsMap[EMazeSide::EMS_East] = nullptr;
+	}
+	if (IsValid(CellWalls.South) && CellWalls.South->IsBlocking())
+	{
+		NeighborsMap[EMazeSide::EMS_South] = nullptr;
+	}
+	if (IsValid(CellWalls.West) && CellWalls.West->IsBlocking())
+	{
+		NeighborsMap[EMazeSide::EMS_West] = nullptr;
+	}
+
+	return true;
+}
+
 bool AMaze::IsValidWall(int CellColumn, int CellRow, EMazeSide WallSide) const
 {
 	int WallColumn = CellColumn;
@@ -487,6 +539,35 @@ FWallCoordinates AMaze::GetWallCoordinates(AWall* Wall)
 	}
 
 	return FWallCoordinates(this, WallColumn, WallRow, WallDirection);
+}
+
+bool AMaze::GetCellWalls(ACell* TargetCell, FCellWalls& Walls)
+{
+	Walls = FCellWalls();
+	if (!IsValid(TargetCell))
+	{
+		return false;
+	}
+
+	if (!ContainsCell(TargetCell))
+	{
+		return false;
+	}
+
+	Walls.Cell = TargetCell;
+
+	FCellCoordinates TargetCellCoords = GetCellCoordinates(TargetCell);
+	int CellRow = TargetCellCoords.CellRow;
+	int CellColumn = TargetCellCoords.CellColumn;
+	// Already checked that this cell is in this maze
+	check(CellRow >= 0 && CellColumn >= 0);
+
+	Walls.North = GetWall(CellColumn, CellRow, EMazeSide::EMS_North);
+	Walls.South = GetWall(CellColumn, CellRow, EMazeSide::EMS_South);
+	Walls.West = GetWall(CellColumn, CellRow, EMazeSide::EMS_West);
+	Walls.East = GetWall(CellColumn, CellRow, EMazeSide::EMS_East);
+
+	return true;
 }
 
 int AMaze::GetNSWallIndex1D(int Column, int Row) const

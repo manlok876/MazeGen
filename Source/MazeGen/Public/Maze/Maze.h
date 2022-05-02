@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Maze/MazeStructs.h"
 #include "Maze.generated.h"
 
 class ACell;
@@ -104,10 +105,14 @@ public:
 	ACell* GetCell(int Column, int Row) const;
 	UFUNCTION(BlueprintPure)
 	ACell* GetCellByCoords(const FCellCoordinates& Coordinates) const;
-	UFUNCTION(BlueprintCallable)
-	TArray<ACell*> GetAllCells() const;
 	UFUNCTION(BlueprintPure)
 	FCellCoordinates GetCellCoordinates(ACell* Cell);
+	UFUNCTION(BlueprintCallable)
+	TArray<ACell*> GetAllCells() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure=false)
+	bool GetNeighboringCells(
+		ACell* TargetCell, TMap<EMazeSide, ACell*>& NeighborsMap, bool bOnlyReachable = false);
 
 	UFUNCTION(BlueprintPure)
 	bool IsValidWall(int CellX, int CellY, EMazeSide WallSide) const;
@@ -117,14 +122,17 @@ public:
 	AWall* GetWall(int CellColumn, int CellRow, EMazeSide WallSide) const;
 	UFUNCTION(BlueprintPure)
 	AWall* GetWallByCoords(const FWallCoordinates& Coordinates) const;
+	UFUNCTION(BlueprintPure)
+	FWallCoordinates GetWallCoordinates(AWall* Wall);
 	UFUNCTION(BlueprintCallable)
 	TArray<AWall*> GetAllWalls() const;
 	UFUNCTION(BlueprintCallable)
 	TArray<AWall*> GetWallsNS() const;
 	UFUNCTION(BlueprintCallable)
 	TArray<AWall*> GetWallsWE() const;
-	UFUNCTION(BlueprintPure)
-	FWallCoordinates GetWallCoordinates(AWall* Wall);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetCellWalls(ACell* TargetCell, FCellWalls& Walls);
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnMazeUpdatedSignature OnMazeUpdatedDispatcher;
