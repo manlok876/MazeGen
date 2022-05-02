@@ -401,31 +401,22 @@ bool AMaze::ContainsWall(AWall* Wall) const
 
 AWall* AMaze::GetWall(int CellColumn, int CellRow, EMazeSide WallSide) const
 {
-	int WallX = CellColumn;
-	int WallY = CellRow;
+	int WallColumn = CellColumn;
+	int WallRow = CellRow;
 	AWall* Result = nullptr;
 
-	int WallIndex1D;
 	switch (WallSide)
 	{
 	case EMazeSide::EMS_South:
-		++WallY;
+		++WallRow;
 	case EMazeSide::EMS_North:
-		WallIndex1D = GetNSWallIndex1D(WallX, WallY);
-		if (WallsNS.IsValidIndex(WallIndex1D))
-		{
-			Result = WallsNS[WallIndex1D];
-		}
+		Result = GetNSWall(WallColumn, WallRow);
 		break;
 
 	case EMazeSide::EMS_East:
-		++WallX;
+		++WallColumn;
 	case EMazeSide::EMS_West:
-		WallIndex1D = GetWEWallIndex1D(WallX, WallY);
-		if (WallsWE.IsValidIndex(WallIndex1D))
-		{
-			Result = WallsWE[WallIndex1D];
-		}
+		Result = GetWEWall(WallColumn, WallRow);
 		break;
 	}
 
@@ -440,23 +431,14 @@ AWall* AMaze::GetWallByCoords(const FWallCoordinates& Coordinates) const
 	}
 
 	AWall* Result = nullptr;
-	int WallIndex1D;
 	switch (Coordinates.WallDirection)
 	{
 	case EWallDirection::EWD_NS:
-		WallIndex1D = GetNSWallIndex1D(Coordinates.WallColumn, Coordinates.WallRow);
-		if (WallsNS.IsValidIndex(WallIndex1D))
-		{
-			Result = WallsNS[WallIndex1D];
-		}
+		Result = GetNSWall(Coordinates.WallColumn, Coordinates.WallRow);
 		break;
 
 	case EWallDirection::EWD_WE:
-		WallIndex1D = GetWEWallIndex1D(Coordinates.WallColumn, Coordinates.WallRow);
-		if (WallsWE.IsValidIndex(WallIndex1D))
-		{
-			Result = WallsWE[WallIndex1D];
-		}
+		Result = GetWEWall(Coordinates.WallColumn, Coordinates.WallRow);
 		break;
 	}
 
@@ -512,9 +494,29 @@ int AMaze::GetNSWallIndex1D(int Column, int Row) const
 	return Index1DFromIndex2D(Column, Width, Row, Length + 1);
 }
 
+AWall* AMaze::GetNSWall(int Column, int Row) const
+{
+	int WallIndex1D = GetNSWallIndex1D(Column, Row);
+	if (WallsNS.IsValidIndex(WallIndex1D))
+	{
+		return WallsNS[WallIndex1D];
+	}
+	return nullptr;
+}
+
 int AMaze::GetWEWallIndex1D(int Column, int Row) const
 {
 	return Index1DFromIndex2D(Column, Width + 1, Row, Length);
+}
+
+AWall* AMaze::GetWEWall(int Column, int Row) const
+{
+	int WallIndex1D = GetWEWallIndex1D(Column, Row);
+	if (WallsWE.IsValidIndex(WallIndex1D))
+	{
+		return WallsWE[WallIndex1D];
+	}
+	return nullptr;
 }
 
 void AMaze::GetWallIndex2D(int Idx1D, EWallDirection WallDir, int& Column, int& Row) const

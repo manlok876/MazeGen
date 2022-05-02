@@ -173,7 +173,11 @@ private:
 	UFUNCTION()
 	int GetNSWallIndex1D(int Column, int Row) const;
 	UFUNCTION()
+	AWall* GetNSWall(int Column, int Row) const;
+	UFUNCTION()
 	int GetWEWallIndex1D(int Column, int Row) const;
+	UFUNCTION()
+	AWall* GetWEWall(int Column, int Row) const;
 	UFUNCTION()
 	void GetWallIndex2D(int Idx1D, EWallDirection WallDir, int& Column, int& Row) const;
 
