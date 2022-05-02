@@ -16,8 +16,10 @@ struct FCellWalls
 
 public:
 	FCellWalls();
-	FCellWalls(AWall* NorthWall, AWall* EastWall, AWall* SouthWall, AWall* WestWall);
+	FCellWalls(ACell* InCell, AWall* NorthWall, AWall* EastWall, AWall* SouthWall, AWall* WestWall);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ACell* Cell;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AWall* North;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

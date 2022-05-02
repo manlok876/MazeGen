@@ -6,11 +6,13 @@
 
 FCellWalls::FCellWalls()
 {
+	Cell = nullptr;
 	North = East = South = West = nullptr;
 }
 
-FCellWalls::FCellWalls(AWall* NorthWall, AWall* EastWall, AWall* SouthWall, AWall* WestWall)
+FCellWalls::FCellWalls(ACell* InCell, AWall* NorthWall, AWall* EastWall, AWall* SouthWall, AWall* WestWall)
 {
+	Cell = InCell;
 	North = NorthWall;
 	East = EastWall;
 	South = SouthWall;
