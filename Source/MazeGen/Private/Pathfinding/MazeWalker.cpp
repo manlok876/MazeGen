@@ -18,6 +18,17 @@ bool UMazeWalker::TryStep(EMazeSide Direction)
 	return false;
 }
 
+ACell* UMazeWalker::TryStepBack()
+{
+	if (PreviousSteps.Num() < 1)
+	{
+		return nullptr;
+	}
+
+	CurrentCell = PreviousSteps.Pop();
+	return CurrentCell;
+}
+
 bool UMazeWalker::TryGoTo(ACell* Destination)
 {
 	return false;
@@ -45,6 +56,7 @@ bool UMazeWalker::TeleportToMaze(AMaze* NewMaze, ACell* StartingCell)
 		return false;
 	}
 
+	DropSavedPath();
 	CurrentMaze = NewMaze;
 	CurrentCell = StartingCell;
 
@@ -68,6 +80,7 @@ bool UMazeWalker::TeleportTo(ACell* Destination)
 		return false;
 	}
 
+	DropSavedPath();
 	CurrentCell = Destination;
 
 	return true;
@@ -99,4 +112,16 @@ bool UMazeWalker::TeleportToCoords(const FCellCoordinates& Destination)
 	}
 
 	return TeleportToMaze(Destination.Maze, DestinationCell);
+}
+
+void UMazeWalker::DropSavedPath()
+{
+	PreviousSteps.Empty();
+}
+
+TArray<ACell*> UMazeWalker::GetSavedPath() const
+{
+	TArray<ACell*> Result = PreviousSteps;
+	Result.Add(CurrentCell);
+	return Result;
 }

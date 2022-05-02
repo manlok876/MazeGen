@@ -24,6 +24,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Maze|Pathfinding")
 	bool TryStep(EMazeSide Direction);
+	UFUNCTION(BlueprintCallable, Category = "Maze|Pathfinding")
+	ACell* TryStepBack();
 
 	UFUNCTION(BlueprintCallable, Category = "Maze|Pathfinding")
 	bool TryGoTo(ACell* Destination);
@@ -37,9 +39,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Maze|Pathfinding")
 	bool TeleportToCoords(const FCellCoordinates& Destination);
 
+	UFUNCTION(BlueprintCallable, Category = "Maze|Pathfinding")
+	void DropSavedPath();
+	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "Maze|Pathfinding")
+	TArray<ACell*> GetSavedPath() const;
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	AMaze* CurrentMaze;
 	UPROPERTY(BlueprintReadOnly)
 	ACell* CurrentCell;
+
+	UPROPERTY()
+	TArray<ACell*> PreviousSteps;
 };
