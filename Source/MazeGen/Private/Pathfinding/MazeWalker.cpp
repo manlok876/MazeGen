@@ -13,9 +13,27 @@ ACell* UMazeWalker::GetCurrentCell() const
 	return CurrentCell;
 }
 
-bool UMazeWalker::TryStep(EMazeSide Direction)
+ACell* UMazeWalker::TryStep(EMazeSide Direction)
 {
-	return false;
+	if (!IsValid(CurrentMaze) && !IsValid(CurrentCell))
+	{
+		return nullptr;
+	}
+
+	TMap<EMazeSide, ACell*> CurrentCellNeighborhood;
+	CurrentMaze->GetNeighboringCells(CurrentCell, CurrentCellNeighborhood, true);
+
+	if (CurrentCellNeighborhood.Contains(Direction) &&
+		IsValid(CurrentCellNeighborhood[Direction]))
+	{
+		PreviousSteps.Push(CurrentCell);
+		CurrentCell = CurrentCellNeighborhood[Direction];
+		return CurrentCell;
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 ACell* UMazeWalker::TryStepBack()

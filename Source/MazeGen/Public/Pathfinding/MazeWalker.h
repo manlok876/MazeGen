@@ -23,7 +23,7 @@ public:
 	ACell* GetCurrentCell() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Maze|Pathfinding")
-	bool TryStep(EMazeSide Direction);
+	ACell* TryStep(EMazeSide Direction);
 	UFUNCTION(BlueprintCallable, Category = "Maze|Pathfinding")
 	ACell* TryStepBack();
 
