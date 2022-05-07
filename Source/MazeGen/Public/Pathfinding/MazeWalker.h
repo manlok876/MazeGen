@@ -52,4 +52,7 @@ protected:
 
 	UPROPERTY()
 	TArray<ACell*> PreviousSteps;
+
+	UFUNCTION()
+	bool Step(ACell* NextCell);
 };

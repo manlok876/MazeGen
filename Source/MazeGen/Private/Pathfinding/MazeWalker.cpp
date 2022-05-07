@@ -26,14 +26,26 @@ ACell* UMazeWalker::TryStep(EMazeSide Direction)
 	if (CurrentCellNeighborhood.Contains(Direction) &&
 		IsValid(CurrentCellNeighborhood[Direction]))
 	{
-		PreviousSteps.Push(CurrentCell);
-		CurrentCell = CurrentCellNeighborhood[Direction];
+		Step(CurrentCellNeighborhood[Direction]);
 		return CurrentCell;
 	}
 	else
 	{
 		return nullptr;
 	}
+}
+
+bool UMazeWalker::Step(ACell* NextCell)
+{
+	if (!IsValid(NextCell))
+	{
+		return false;
+	}
+
+	PreviousSteps.Push(CurrentCell);
+	CurrentCell = NextCell;
+
+	return true;
 }
 
 ACell* UMazeWalker::TryStepBack()
@@ -139,7 +151,7 @@ void UMazeWalker::DropSavedPath()
 
 TArray<ACell*> UMazeWalker::GetSavedPath() const
 {
-	TArray<ACell*> Result = PreviousSteps;
+	TArray<ACell*> Result(PreviousSteps, 1);
 	Result.Add(CurrentCell);
 	return Result;
 }
