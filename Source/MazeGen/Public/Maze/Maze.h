@@ -11,16 +11,6 @@ class ACell;
 class AWall;
 class AMaze;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMazeUpdatedSignature, AMaze*, Maze);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnMazeSizeChangedSignature, AMaze*, Maze, FIntPoint, OldSize, FIntPoint, NewSize);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsAddedSignature, AMaze*, Maze, const TArray<ACell*>&, AddedCells);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsRemovedSignature, AMaze*, Maze, const TArray<ACell*>&, RemovedCells);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsAddedSignature, AMaze*, Maze, const TArray<AWall*>&, AddedWalls);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsRemovedSignature, AMaze*, Maze, const TArray<AWall*>&, RemovedWalls);
-
 UENUM(BlueprintType)
 enum class EMazeSide : uint8 {
 	EMS_North	UMETA(DisplayName = "North"),
@@ -33,6 +23,21 @@ UENUM(BlueprintType)
 enum class EWallDirection: uint8 {
 	EWD_NS	UMETA(DisplayName = "Horizontal"),
 	EWD_WE	UMETA(DisplayName = "Vertical")
+};
+
+USTRUCT(BlueprintType)
+struct FMazeSize
+{
+	GENERATED_BODY()
+
+public:
+	FMazeSize();
+	FMazeSize(int NumColumns, int NumRows);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Columns;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Rows;
 };
 
 USTRUCT(BlueprintType)
@@ -71,6 +76,16 @@ public:
 	EWallDirection WallDirection;
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMazeUpdatedSignature, AMaze*, Maze);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnMazeSizeChangedSignature, AMaze*, Maze, FMazeSize, OldSize, FMazeSize, NewSize);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsAddedSignature, AMaze*, Maze, const TArray<ACell*>&, AddedCells);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeCellsRemovedSignature, AMaze*, Maze, const TArray<ACell*>&, RemovedCells);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsAddedSignature, AMaze*, Maze, const TArray<AWall*>&, AddedWalls);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMazeWallsRemovedSignature, AMaze*, Maze, const TArray<AWall*>&, RemovedWalls);
+
 UCLASS(BlueprintType, Blueprintable)
 class MAZEGEN_API AMaze : public AActor
 {
@@ -94,8 +109,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidth(int NewWidth);
 
+	UFUNCTION(BlueprintPure)
+	FMazeSize GetMazeSize() const;
 	UFUNCTION(BlueprintCallable)
-	void SetSize(int NewWidth, int NewLength);
+	void SetSize(const FMazeSize& NewSize);
 
 	UFUNCTION(BlueprintPure)
 	bool IsValidCell(int Column, int Row) const;

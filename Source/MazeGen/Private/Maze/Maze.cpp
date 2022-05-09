@@ -5,6 +5,17 @@
 #include "Maze/Cell.h"
 #include "Maze/Wall.h"
 
+FMazeSize::FMazeSize()
+{
+	Columns = Rows = 0;
+}
+
+FMazeSize::FMazeSize(int NumColumns, int NumRows)
+{
+	Columns = NumColumns;
+	Rows = NumRows;
+}
+
 FCellCoordinates::FCellCoordinates()
 {
 	Maze = nullptr;
@@ -102,9 +113,14 @@ void AMaze::SetWidth(int NewWidth)
 	UpdateMazeSize(NewWidth, Length);
 }
 
-void AMaze::SetSize(int NewWidth, int NewLength)
+FMazeSize AMaze::GetMazeSize() const
 {
-	UpdateMazeSize(NewWidth, NewLength);
+	return FMazeSize(Width, Length);
+}
+
+void AMaze::SetSize(const FMazeSize& NewSize)
+{
+	UpdateMazeSize(NewSize.Columns, NewSize.Rows);
 }
 
 void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
@@ -278,7 +294,7 @@ void AMaze::UpdateMazeSize(int NewWidth, int NewLength)
 	if (OnMazeSizeChangedDispatcher.IsBound())
 	{
 		OnMazeSizeChangedDispatcher.Broadcast(this,
-			FIntPoint(OldWidth, OldLength), FIntPoint(NewWidth, NewLength));
+			FMazeSize(OldWidth, OldLength), FMazeSize(NewWidth, NewLength));
 	}
 	if (OnMazeUpdatedDispatcher.IsBound())
 	{

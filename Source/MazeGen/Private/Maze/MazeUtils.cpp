@@ -41,7 +41,7 @@ void UMazeUtils::RebuildMazeFromData(AMaze* Maze, const FMazeData& Data)
 	check(Data.NSWallsInfo.Num() == Data.Width * (Data.Length + 1));
 	check(Data.WEWallsInfo.Num() == (Data.Width + 1) * Data.Length);
 
-	Maze->SetSize(Data.Width, Data.Length);
+	Maze->SetSize(FMazeSize(Data.Width, Data.Length));
 	check(Maze->GetAllCells().Num() == Data.CellsInfo.Num());
 	check(Maze->GetWallsNS().Num() == Data.NSWallsInfo.Num());
 	check(Maze->GetWallsWE().Num() == Data.WEWallsInfo.Num());
