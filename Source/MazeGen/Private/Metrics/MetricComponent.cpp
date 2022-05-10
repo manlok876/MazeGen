@@ -82,6 +82,11 @@ void UMetricComponent::RunMetric()
 	}
 
 	MetricObject->RunMetricForMaze(Maze);
+
+	if (MetricRecalculatedDispatcher.IsBound())
+	{
+		MetricRecalculatedDispatcher.Broadcast(this, Maze);
+	}
 }
 
 float UMetricComponent::GetMetricForCell_Implementation(ACell* Cell)
@@ -115,10 +120,5 @@ void UMetricComponent::SetMaze(AMaze* NewMaze)
 	if (IsValid(Maze))
 	{
 		// Bind
-	}
-
-	if (IsValid(MetricObject))
-	{
-
 	}
 }

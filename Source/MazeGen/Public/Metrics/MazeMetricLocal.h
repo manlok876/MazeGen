@@ -10,8 +10,6 @@
 class AMaze;
 class ACell;
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMetricRecalculatedSignature, UObject*, MetricObject, AMaze*, RelatedMaze);
-
 /**
  * This is the base class for per-cell metrics
  */
@@ -25,9 +23,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void RunMetricForMaze(AMaze* TargetMaze);
-
-	//UPROPERTY(BlueprintAssignable)
-	//FMetricRecalculatedSignature MetricRelalculatedDispatcher;
 
 	virtual float GetMetricForCell_Implementation(ACell* Cell) override;
 

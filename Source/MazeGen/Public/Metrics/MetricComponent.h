@@ -12,7 +12,7 @@ class UMazeMetricLocal;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMetricClassChangedSignature, UMetricComponent*, MetricComponent);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMetricRecalculatedSignature, UObject*, MetricObject);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMetricRecalculatedSignature, UObject*, MetricObject, AMaze*, RelatedMaze);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MAZEGEN_API UMetricComponent : public UActorComponent, public ILocalMetricInterface
@@ -35,6 +35,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FMetricClassChangedSignature MetricClassChangedDespatcher;
+
+	UPROPERTY(BlueprintAssignable)
+	FMetricRecalculatedSignature MetricRecalculatedDispatcher;
 
 protected:
 	virtual void BeginPlay() override;
