@@ -17,24 +17,62 @@ void UCorridorLengthLocal::RunMetricForMaze_Implementation(AMaze* TargetMaze)
 		CachedMetricValues.Remove(Cell);
 	}
 
-	for (ACell* Cell : TargetMaze->GetAllCells())
+	const FMazeSize MazeSize = TargetMaze->GetMazeSize();
+
+	TArray<ACell*> CorridorCells;
+	CorridorCells.Reserve(FMath::Max(MazeSize.Columns, MazeSize.Rows));
+
+	// Get vertical corridors
+	for (int ColIdx = 0; ColIdx < MazeSize.Columns; ++ColIdx)
 	{
-		// TODO: check cell state
+		CorridorCells.Empty();
+		CorridorCells.Add(TargetMaze->GetCell(ColIdx, 0));
 
-		FCellCoordinates CellCoordinates = TargetMaze->GetCellCoordinates(Cell);
-		check(CellCoordinates.CellRow >= 0 && CellCoordinates.CellColumn >= 0);
+		for (int RowIdx = 1; RowIdx < MazeSize.Rows; ++RowIdx)
+		{
+			const AWall* Wall = TargetMaze->GetWall(ColIdx, RowIdx, EMazeSide::EMS_North);
+			if (IsValid(Wall) && Wall->IsBlocking())
+			{
+				int CorridorLength = CorridorCells.Num();
+				for (ACell* Cell : CorridorCells)
+				{
+					CacheMetricValue(Cell, CorridorLength);
+				}
+				CorridorCells.Empty();
+			}
 
-		int VerticalCorridorLength = 1;
+			ACell* CurrentCell = TargetMaze->GetCell(ColIdx, RowIdx);
+			if (IsValid(CurrentCell))
+			{
+				CorridorCells.Add(CurrentCell);
+			}
+		}
+	}
 
-		int TmpCellRow = CellCoordinates.CellRow;
-		int TmpCellColumn = CellCoordinates.CellColumn;
-		
+	// Get horizontal corridors
+	for (int RowIdx = 0; RowIdx < MazeSize.Rows; ++RowIdx)
+	{
+		CorridorCells.Empty();
+		CorridorCells.Add(TargetMaze->GetCell(0, RowIdx));
 
-		int HorizontalCorridorLength = 1;
+		for (int ColIdx = 1; ColIdx < MazeSize.Columns; ++ColIdx)
+		{
+			const AWall* Wall = TargetMaze->GetWall(ColIdx, RowIdx, EMazeSide::EMS_West);
+			if (IsValid(Wall) && Wall->IsBlocking())
+			{
+				float CorridorLength = CorridorCells.Num();
+				for (ACell* Cell : CorridorCells)
+				{
+					CacheMetricValue(Cell, FMath::Max(CorridorLength, GetMetricForCell(Cell)));
+				}
+				CorridorCells.Empty();
+			}
 
-
-		// Get vertical corridor
-		
-		// Get horizontal corridor
+			ACell* CurrentCell = TargetMaze->GetCell(ColIdx, RowIdx);
+			if (IsValid(CurrentCell))
+			{
+				CorridorCells.Add(CurrentCell);
+			}
+		}
 	}
 }
