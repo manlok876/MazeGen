@@ -65,7 +65,7 @@ void UMetricComponent::SetUsedMetric(TSubclassOf<UMazeMetricLocal> NewMetricClas
 		return;
 	}
 
-	if (!NewMetricClass->Implements<ULocalMetricInterface>())
+	if (!NewMetricClass->ImplementsInterface(ULocalMetricInterface::StaticClass()))
 	{
 		UE_LOG(LogTemp, Error, TEXT("UMetricComponent::SetUsedMetric: Provided class does not implement LocalMetricInterface, aborting"));
 		UE_LOG(LogTemp, Error, TEXT("                                 Class: %s"), *NewMetricClass->GetName());
