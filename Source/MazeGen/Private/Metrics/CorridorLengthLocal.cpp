@@ -26,11 +26,16 @@ void UCorridorLengthLocal::RunMetricForMaze_Implementation(AMaze* TargetMaze)
 	for (int ColIdx = 0; ColIdx < MazeSize.Columns; ++ColIdx)
 	{
 		CorridorCells.Empty();
-		CorridorCells.Add(TargetMaze->GetCell(ColIdx, 0));
 
-		for (int RowIdx = 1; RowIdx < MazeSize.Rows; ++RowIdx)
+		for (int RowIdx = 0; RowIdx < MazeSize.Rows; ++RowIdx)
 		{
-			const AWall* Wall = TargetMaze->GetWall(ColIdx, RowIdx, EMazeSide::EMS_North);
+			ACell* CurrentCell = TargetMaze->GetCell(ColIdx, RowIdx);
+			if (IsValid(CurrentCell))
+			{
+				CorridorCells.Add(CurrentCell);
+			}
+
+			const AWall* Wall = TargetMaze->GetWall(ColIdx, RowIdx, EMazeSide::EMS_South);
 			if (IsValid(Wall) && Wall->IsBlocking())
 			{
 				int CorridorLength = CorridorCells.Num();
@@ -40,12 +45,12 @@ void UCorridorLengthLocal::RunMetricForMaze_Implementation(AMaze* TargetMaze)
 				}
 				CorridorCells.Empty();
 			}
+		}
 
-			ACell* CurrentCell = TargetMaze->GetCell(ColIdx, RowIdx);
-			if (IsValid(CurrentCell))
-			{
-				CorridorCells.Add(CurrentCell);
-			}
+		int CorridorLength = CorridorCells.Num();
+		for (ACell* Cell : CorridorCells)
+		{
+			CacheMetricValue(Cell, CorridorLength);
 		}
 	}
 
@@ -53,26 +58,33 @@ void UCorridorLengthLocal::RunMetricForMaze_Implementation(AMaze* TargetMaze)
 	for (int RowIdx = 0; RowIdx < MazeSize.Rows; ++RowIdx)
 	{
 		CorridorCells.Empty();
-		CorridorCells.Add(TargetMaze->GetCell(0, RowIdx));
 
-		for (int ColIdx = 1; ColIdx < MazeSize.Columns; ++ColIdx)
+		for (int ColIdx = 0; ColIdx < MazeSize.Columns; ++ColIdx)
 		{
-			const AWall* Wall = TargetMaze->GetWall(ColIdx, RowIdx, EMazeSide::EMS_West);
-			if (IsValid(Wall) && Wall->IsBlocking())
-			{
-				float CorridorLength = CorridorCells.Num();
-				for (ACell* Cell : CorridorCells)
-				{
-					CacheMetricValue(Cell, FMath::Max(CorridorLength, GetMetricForCell(Cell)));
-				}
-				CorridorCells.Empty();
-			}
-
 			ACell* CurrentCell = TargetMaze->GetCell(ColIdx, RowIdx);
 			if (IsValid(CurrentCell))
 			{
 				CorridorCells.Add(CurrentCell);
 			}
+
+			const AWall* Wall = TargetMaze->GetWall(ColIdx, RowIdx, EMazeSide::EMS_East);
+			if (IsValid(Wall) && Wall->IsBlocking())
+			{
+				float CorridorLength = CorridorCells.Num();
+				for (ACell* Cell : CorridorCells)
+				{
+					CacheMetricValue(Cell,
+						FMath::Max(CorridorLength, GetMetricForCell_Implementation(Cell)));
+				}
+				CorridorCells.Empty();
+			}
+		}
+
+		float CorridorLength = CorridorCells.Num();
+		for (ACell* Cell : CorridorCells)
+		{
+			CacheMetricValue(Cell,
+				FMath::Max(CorridorLength, GetMetricForCell_Implementation(Cell)));
 		}
 	}
 }
