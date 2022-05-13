@@ -28,5 +28,5 @@ void UMazeMetricLocal::CacheMetricValue(ACell* Cell, float MetricValue)
 	{
 		return;
 	}
-	CachedMetricValues[Cell] = MetricValue;
+	CachedMetricValues.Add(Cell, MetricValue);
 }
